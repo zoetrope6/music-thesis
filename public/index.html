@@ -55,15 +55,316 @@
         font-size: 14px;
         box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
       }
+
+      #signup{
+        position:absolute;
+        width:100px;
+        left:50%;
+        margin-left:-50px;
+        bottom:200px;
+        height:60px;
+        line-height:60px;
+        text-align:center;
+        border-radius:4px;
+        background-color:#f66;
+        color:white;
+        font-family:helvetica;
+        cursor:pointer;
+      }
+
+      #signup:hover{
+        background-color:#f44;
+      }
+
+      #login{
+        position:absolute;
+        width:100px;
+        left:50%;
+        margin-left:-50px;
+        bottom:100px;
+        height:60px;
+        line-height:60px;
+        text-align:center;
+        border-radius:4px;
+        background-color:#6d6;
+        color:white;
+        font-family:helvetica;
+        cursor:pointer;
+      }
+
+      #myUsername{
+        position:absolute;
+        width:300px;
+        left:50%;
+        margin-left:-150px;
+        bottom:300px;
+        height:60px;
+        line-height:60px;
+        border-radius:4px;
+        background-color:white;
+        font-family:helvetica;
+        border:1px solid #ddd;
+        box-sizing:border-box;
+        padding:20px;
+      }
+
+      #myName{
+        position:absolute;
+        width:300px;
+        left:50%;
+        margin-left:-150px;
+        bottom:400px;
+        height:60px;
+        line-height:60px;
+        border-radius:4px;
+        background-color:white;
+        font-family:helvetica;
+        border:1px solid #ddd;
+        box-sizing:border-box;
+        padding:20px;
+      }
+
+      #login:hover{
+        background-color:#4d4;
+      }
+
+      #profilePic{
+        display:none;
+        position:fixed;
+        top:20px;
+        right:20px;
+        width:50px;
+        height:50px;
+        border-radius:100px;
+        border: 3px solid white;
+        box-sizing:border-box;
+      }
+
+      #username{
+        display:none;
+        position:fixed;
+        top:20px;
+        right:100px;
+        height:50px;
+        line-height:50px;
+        text-align:center;
+      }
     </style>
+
+    <!-- other js plugins / libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <!-- get the firebase js plugin -->
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-messaging.js"></script>
+
+    <!-- Define the configuration to connect to my firebase project -->
+    <script>
+      // Initialize Firebase
+      // TODO: Replace with your project's customized code snippet
+      var config = {
+        apiKey: "AIzaSyBPJoVpj7rdKJ-TgMgLnFyc4FZSAnJLx50",
+        authDomain: "zoe-project-ca882.firebaseapp.com",
+        databaseURL: "https://zoe-project-ca882.firebaseio.com",
+        storageBucket: "<BUCKET>.appspot.com",
+        messagingSenderId: "<SENDER_ID>",
+      };
+      firebase.initializeApp(config);
+    </script>
+
+
+    <!-- My Project Javascript Code -->
+    <script>
+    $(document).ready(function(){
+
+
+      $('#signup').click(function(){
+        var userID = $('#myUsername').val();
+        var myUsername = $('#myName').val();
+        writeUserProfile(userID,myUsername, 'zoeRogers@email.com','https://scontent.xx.fbcdn.net/v/t1.0-1/c0.0.130.130/p130x130/15327488_10154747310503908_6968614292008202244_n.jpg?oh=9f7e5f0dbb693d0d69df2d63ee0d66c7&oe=594511BB');
+      });
+
+      $('#login').click(function(){
+        console.log('user clicked login...');
+        var userID = $('#myUsername').val();
+        login(userID);
+      });
+
+
+
+
+
+    });
+
+    //writeUserData('007','Zoe Rogers', 'zoeRogers@email.com','https://scontent.xx.fbcdn.net/v/t1.0-1/c0.0.130.130/p130x130/15327488_10154747310503908_6968614292008202244_n.jpg?oh=9f7e5f0dbb693d0d69df2d63ee0d66c7&oe=594511BB');
+
+
+
+
+
+      //EVERYTHING BELOW THIS IS RE-USABLE FUNCTIONS -----------------------------------
+
+      function writeUserProfile(userId, name, email, imageUrl) {
+        firebase.database().ref('users/' + userId).set({
+          username: name,
+          email: email,
+          profile_picture : imageUrl
+        });
+        getLocation();
+      }
+
+
+      function updateUserLocation(userId, location) {
+        firebase.database().ref('users/' + userId).update({
+          lat:location.coords.latitude,
+          lon:location.coords.longitude
+        });
+      }
+
+        //var userId = firebase.auth().currentUser.uid;
+        //var userId = '007';
+
+        function login(userId){
+          console.log('starting the login function...');
+          firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+
+            //get back some data:
+            var username = snapshot.val().username;
+            var profile_picture = snapshot.val().profile_picture;
+            var email = snapshot.val().email;
+
+
+            //after we get that data, we do some stuff with it:
+            $('#profilePic').css('background','url('+profile_picture+') center center no-repeat').css('background-size','cover').fadeIn();
+            $('#username').html(username).attr('title',email).fadeIn();
+
+            console.log('about to get the user location..');
+            getLocation();
+            
+
+
+          // ...
+          });
+        }
+
+        function getAllUserLocations(){
+          firebase.database().ref('/users').once('value').then(function(snapshot) {
+
+            console.log(snapshot.val());
+
+            var data = snapshot.val();
+
+            var myLat = window.myPosition.coords.latitude;
+            var myLong = window.myPosition.coords.longitude;
+
+            /*for(key in obj){
+                if(key)
+                // The key is key
+                // The value is obj[key]
+            }*/
+            var thisDistance = 0;
+            var peopleCloseBy = [];
+            $('#people').html('');
+            for (var key in data){
+
+                console.log(data[key]);
+
+                var thisLong = data[key].lon;
+                var thisLat = data[key].lat;
+                thisDistance = distance(myLat, myLong, thisLat, thisLong);
+                console.log('distance: '+thisDistance);
+                //console.log(key);
+                //console.log(value);
+
+                if(thisDistance < 0.005){
+                  //alert("there's someone close by! "+thisDistance);
+                  peopleCloseBy.push(data[key].username);
+                  $('#people').append('<div>'+data[key].username+' : ' + thisDistance + '</div>');
+                }
+
+            }
+
+
+
+            
+
+            /*//get back some data:
+            var username = snapshot.val().username;
+            var profile_picture = snapshot.val().profile_picture;
+            var email = snapshot.val().email;
+
+
+            //after we get that data, we do some stuff with it:
+            $('#profilePic').css('background','url('+profile_picture+') center center no-repeat').css('background-size','cover').fadeIn();
+            $('#username').html(username).attr('title',email).fadeIn();
+
+            console.log('about to get the user location..');
+            getLocation();*/
+            
+
+
+          // ...
+          });
+        }
+
+
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                }
+            }
+            function showPosition(position) {
+                //alert("Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude); 
+
+                var userID = $('#myUsername').val();
+                window.myPosition = position;
+
+                updateUserLocation(userID,position);
+                getAllUserLocations();
+            }
+
+
+
+
+            function distance(lat1, lon1, lat2, lon2, unit) {
+              var radlat1 = Math.PI * lat1/180
+              var radlat2 = Math.PI * lat2/180
+              var theta = lon1-lon2
+              var radtheta = Math.PI * theta/180
+              var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+              dist = Math.acos(dist)
+              dist = dist * 180/Math.PI
+              dist = dist * 60 * 1.1515
+              if (unit=="K") { dist = dist * 1.609344 }
+              if (unit=="N") { dist = dist * 0.8684 }
+              return dist;
+            }
+        
+      
+    </script>
+
+
   </head>
   <body>
-    <div id="message">
-      <h1>Welcome to ZOE'S PROJECT :D</h1>
-      <p>Get ready to listen to some music from stranger people!</p>
-      <ul>
-        <li><a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a></li>
-      </ul>
-    </div>
+    <div id = "signup">Sign Up</div>
+    <input id = "myUsername" placeholder="username"/>
+    <input id = "myName" placeholder="name"/>
+    <div id = "login">Log In</div>
+
+    <div id = "pplCloseBy"><header><b>People Close By:</b></header><div id = "people"></div></div>
+
+
+
+    <div id = "profilePic"></div>
+    <div id = "username"></div>
+
+
+
+    
   </body>
 </html>
