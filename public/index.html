@@ -76,6 +76,44 @@
         background-color:#f44;
       }
 
+      #currentSongForm{
+        position:absolute;
+        width:300px;
+        left:50%;
+        margin-left:-150px;
+        top:200px;
+        display:none;
+      }
+
+      #uploadCurrentSong{
+        position:relative;
+        width:100px;
+        margin:auto;
+        line-height:60px;
+        text-align:center;
+        border-radius:4px;
+        background-color:#f66;
+        color:white;
+        font-family:helvetica;
+        cursor:pointer;
+      }
+
+      #uploadCurrentSong:hover{
+        background-color:#f44;
+      }
+
+      #currentSong{
+        width:100%;
+        position:relative;
+        border-radius:4px;
+        background-color:white;
+        font-family:helvetica;
+        border:1px solid #ddd;
+        box-sizing:border-box;
+        padding:20px;
+        margin-bottom:20px;
+      }
+
       #login{
         position:absolute;
         width:100px;
@@ -149,6 +187,10 @@
         line-height:50px;
         text-align:center;
       }
+
+      #loginForm, #signupForm{
+        display:none;
+      }
     </style>
 
     <!-- other js plugins / libraries -->
@@ -180,18 +222,64 @@
     <script>
     $(document).ready(function(){
 
+      var signingUp = false;
+      var loggingIn = false;
 
       $('#signup').click(function(){
-        var userID = $('#myUsername').val();
-        var myUsername = $('#myName').val();
-        writeUserProfile(userID,myUsername, 'zoeRogers@email.com','https://scontent.xx.fbcdn.net/v/t1.0-1/c0.0.130.130/p130x130/15327488_10154747310503908_6968614292008202244_n.jpg?oh=9f7e5f0dbb693d0d69df2d63ee0d66c7&oe=594511BB');
+        if(signingUp){
+
+          var userID = $('#signupUsername').val();
+          var myUsername = $('#signupName').val();
+          var myEmail = $('#signupEmail').val();
+          if(userID != '' && myUsername != '' && myEmail != ''){
+            writeUserProfile(userID, myUsername, myEmail ,'https://www.arcadia.edu/sites/default/files/default-user.png');
+            $('#signupForm').hide();
+            $('#login').hide();
+            $('#signup').hide();
+          }else {
+            alert('you need to fill out all the fields!');
+          }
+
+        }else{
+          signingUp = true;
+          loggingIn = false;
+          $('#signupForm').show();
+          $('#loginForm').hide();
+          $('#signupUsername').focus();
+        }
       });
+        
 
       $('#login').click(function(){
-        console.log('user clicked login...');
-        var userID = $('#myUsername').val();
-        login(userID);
+        if(loggingIn){
+
+          console.log('user clicked login...');
+          var userID = $('#loginUsername').val();
+
+          if(userID != ''){
+            login(userID);
+            $('#loginForm').hide();
+            $('#login').hide();
+            $('#signup').hide();
+          }else {
+            alert('you need to fill out your username!');
+          }
+
+        }else{
+          $('#loginUsername').focus();
+          signingUp = false;
+          loggingIn = true;
+          $('#loginForm').show();
+          $('#signupForm').hide();
+        }
       });
+
+
+
+       $('#uploadCurrentSong').click(function(){
+        var mySongLink = $('#currentSong').val();
+        setANewSong(mySongLink);
+       });
 
 
 
@@ -208,6 +296,12 @@
       //EVERYTHING BELOW THIS IS RE-USABLE FUNCTIONS -----------------------------------
 
       function writeUserProfile(userId, name, email, imageUrl) {
+
+        window.username = userId;
+        window.name = name;
+        window.email = email;
+        window.imageUrl = imageUrl;
+
         firebase.database().ref('users/' + userId).set({
           username: name,
           email: email,
@@ -224,10 +318,23 @@
         });
       }
 
+
+      function setANewSong(songLink) {
+        var userId = window.username;
+        firebase.database().ref('users/' + userId).update({
+          currentSong:songLink
+        });
+      }
+
+
+
         //var userId = firebase.auth().currentUser.uid;
         //var userId = '007';
 
         function login(userId){
+
+          window.username = userId;
+
           console.log('starting the login function...');
           firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
 
@@ -236,6 +343,9 @@
             var profile_picture = snapshot.val().profile_picture;
             var email = snapshot.val().email;
 
+            window.name = username;
+            window.email = email;
+            window.imageUrl = profile_picture;
 
             //after we get that data, we do some stuff with it:
             $('#profilePic').css('background','url('+profile_picture+') center center no-repeat').css('background-size','cover').fadeIn();
@@ -245,9 +355,10 @@
             getLocation();
             
 
-
           // ...
           });
+
+          $('#currentSongForm').fadeIn();
         }
 
         function getAllUserLocations(){
@@ -279,10 +390,16 @@
                 //console.log(key);
                 //console.log(value);
 
-                if(thisDistance < 0.005){
+                if(thisDistance < 0.1){
                   //alert("there's someone close by! "+thisDistance);
+
+                  var songHtml = '';
+                  if(data[key].currentSong){
+                    songHtml = '<a href = "' + data[key].currentSong + '">Listen to my song!</a>';
+                  }
+
                   peopleCloseBy.push(data[key].username);
-                  $('#people').append('<div>'+data[key].username+' : ' + thisDistance + '</div>');
+                  $('#people').append('<br><div>'+data[key].username+' : ' + thisDistance + '<br>'+songHtml+'</div><br>');
                 }
 
             }
@@ -321,7 +438,7 @@
             function showPosition(position) {
                 //alert("Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude); 
 
-                var userID = $('#myUsername').val();
+                var userID = window.username;
                 window.myPosition = position;
 
                 updateUserLocation(userID,position);
@@ -352,9 +469,22 @@
   </head>
   <body>
     <div id = "signup">Sign Up</div>
-    <input id = "myUsername" placeholder="username"/>
-    <input id = "myName" placeholder="name"/>
     <div id = "login">Log In</div>
+
+    <div id= "loginForm">
+      <input id = "loginUsername" placeholder="username"/>
+    </div>
+
+    <div id= "signupForm">
+      <input id = "signupUsername" placeholder="username"/>
+      <input id = "signupName" placeholder="name"/>
+      <input id = "signupEmail" placeholder="email"/>
+    </div>
+
+    <div id= "currentSongForm">
+      <input id = "currentSong" placeholder="Get a link to your current song from Spotify!"/>
+      <div id = "uploadCurrentSong">Upload!</div>
+    </div>
 
     <div id = "pplCloseBy"><header><b>People Close By:</b></header><div id = "people"></div></div>
 
