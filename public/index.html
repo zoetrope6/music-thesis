@@ -58,10 +58,10 @@
 
       #signup{
         position:absolute;
-        width:100px;
+        width:200px;
         left:50%;
-        margin-left:-50px;
-        bottom:200px;
+        margin-left:-100px;
+        bottom:170px;
         height:60px;
         line-height:60px;
         text-align:center;
@@ -81,13 +81,14 @@
         width:300px;
         left:50%;
         margin-left:-150px;
-        top:200px;
+        top:300px;
+        text-align: center;
         display:none;
       }
 
       #uploadCurrentSong{
         position:relative;
-        width:100px;
+        width:200px;
         margin:auto;
         line-height:60px;
         text-align:center;
@@ -116,10 +117,10 @@
 
       #login{
         position:absolute;
-        width:100px;
+        width:200px;
         left:50%;
-        margin-left:-50px;
-        bottom:100px;
+        margin-left:-100px;
+        bottom:90px;
         height:60px;
         line-height:60px;
         text-align:center;
@@ -189,7 +190,12 @@
       }
 
       #loginForm, #signupForm{
-        display:none;
+    display: none;
+    position: relative;
+    margin: 0 auto;
+    width: 150px;
+    text-align: center;
+    top: 300px;
       }
     </style>
 
@@ -468,6 +474,7 @@
 
   </head>
   <body>
+    <div id = "pplCloseBy"><header><b>People Close By:</b></header><div id = "people"></div></div>
     <div id = "signup">Sign Up</div>
     <div id = "login">Log In</div>
 
@@ -482,11 +489,11 @@
     </div>
 
     <div id= "currentSongForm">
-      <input id = "currentSong" placeholder="Get a link to your current song from Spotify!"/>
+      <input id = "currentSong" placeholder="Copy a link of your current song from Spotify!"/>
       <div id = "uploadCurrentSong">Upload!</div>
     </div>
 
-    <div id = "pplCloseBy"><header><b>People Close By:</b></header><div id = "people"></div></div>
+    
 
 
 
