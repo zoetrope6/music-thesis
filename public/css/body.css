@@ -1,0 +1,192 @@
+body {
+        font-family: Roboto, Arial, sans-serif;
+        background: #ECEFF1;
+        color: rgba(0,0,0,0.87);
+      }
+
+      a {
+        color: rgb(3,155,229);
+      }
+
+      #message {
+        max-width: 400px;
+        margin: 40px auto;
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2),0 1px 1px 0 rgba(0,0,0,0.14),0 2px 1px -1px rgba(0,0,0,0.12);
+        border-radius: 2px;
+        background: white;
+        padding: 16px 24px;
+      }
+
+      #message h1 {
+        font-size: 22px;
+        font-weight: 500;
+        text-align: center;
+        margin: 0 0 16px;
+      }
+
+      #message p {
+        font-weight: 300;
+        line-height: 150%;
+      }
+
+      #message ul {
+        list-style: none;
+        margin: 16px 0 0;
+        padding: 0;
+        text-align: center;
+      }
+
+      #message li a {
+        display: inline-block;
+        padding: 8px;
+        text-transform: uppercase;
+        text-decoration: none;
+        font-weight: 500;
+        background: rgb(3,155,229);
+        color: white;
+        border: 1px solid rgb(3,155,229);
+        border-radius: 3px;
+        font-size: 14px;
+        box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+      }
+
+      #signup{
+        position:absolute;
+        width:200px;
+        left:50%;
+        margin-left:-100px;
+        bottom:170px;
+        height:60px;
+        line-height:60px;
+        text-align:center;
+        border-radius:4px;
+        background-color:#f66;
+        color:white;
+        font-family:helvetica;
+        cursor:pointer;
+      }
+
+      #signup:hover{
+        background-color:#f44;
+      }
+
+      #currentSongForm{
+        position:absolute;
+        width:300px;
+        left:50%;
+        margin-left:-150px;
+        top:300px;
+        display:none;
+      }
+
+      #uploadCurrentSong{
+        position:relative;
+        width:200px;
+        margin:auto;
+        line-height:60px;
+        text-align:center;
+        border-radius:4px;
+        background-color:#f66;
+        color:white;
+        font-family:helvetica;
+        cursor:pointer;
+      }
+
+      #uploadCurrentSong:hover{
+        background-color:#f44;
+      }
+
+      #currentSong{
+        width:100%;
+        position:relative;
+        border-radius:4px;
+        background-color:white;
+        font-family:helvetica;
+        border:1px solid #ddd;
+        box-sizing:border-box;
+        padding:20px;
+        margin-bottom:20px;
+      }
+
+      #login{
+        position:absolute;
+        width:200px;
+        left:50%;
+        margin-left:-100px;
+        bottom:90px;
+        height:60px;
+        line-height:60px;
+        text-align:center;
+        border-radius:4px;
+        background-color:#6d6;
+        color:white;
+        font-family:helvetica;
+        cursor:pointer;
+      }
+
+      #myUsername{
+        position:absolute;
+        width:300px;
+        left:50%;
+        margin-left:-150px;
+        bottom:300px;
+        height:60px;
+        line-height:60px;
+        border-radius:4px;
+        background-color:white;
+        font-family:helvetica;
+        border:1px solid #ddd;
+        box-sizing:border-box;
+        padding:20px;
+      }
+
+      #myName{
+        position:absolute;
+        width:300px;
+        left:50%;
+        margin-left:-150px;
+        bottom:400px;
+        height:60px;
+        line-height:60px;
+        border-radius:4px;
+        background-color:white;
+        font-family:helvetica;
+        border:1px solid #ddd;
+        box-sizing:border-box;
+        padding:20px;
+      }
+
+      #login:hover{
+        background-color:#4d4;
+      }
+
+      #profilePic{
+        display:none;
+        position:fixed;
+        top:20px;
+        right:20px;
+        width:50px;
+        height:50px;
+        border-radius:100px;
+        border: 3px solid white;
+        box-sizing:border-box;
+      }
+
+      #username{
+        display:none;
+        position:fixed;
+        top:20px;
+        right:100px;
+        height:50px;
+        line-height:50px;
+        text-align:center;
+      }
+
+      #loginForm, #signupForm{
+    display: none;
+    position: relative;
+    margin: 0 auto;
+    width: 150px;
+    text-align: center;
+    top: 300px;
+      }
